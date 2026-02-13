@@ -13,9 +13,9 @@ env:
   AWS_REGION: ${{ vars.AWS_REGION }}
   TF_WORKING_DIR: ./terraform
   SERVICE_NAME: ${{ vars.SERVICE_NAME }}
-  API_PROJ_PATH: src\${{ vars.PROJECT_NAME }}\${{ vars.PROJECT_NAME }}.csproj
+  API_PROJ_PATH: src/AuthApi/AuthApi.csproj
   BASE_PATH: auth
-
+  
 jobs:
   build:
     runs-on: ubuntu-latest
