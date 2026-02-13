@@ -1,0 +1,112 @@
+name: Deploy API to Lambda
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  VERSION: 0.0.1
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  TF_WORKING_DIR: ./terraform
+  SERVICE_NAME: ${{ vars.SERVICE_NAME }}
+  API_PROJ_PATH: src\${{ vars.PROJECT_NAME }}\${{ vars.PROJECT_NAME }}.csproj
+  BASE_PATH: auth
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/dotnet/sdk:8.0
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install zip
+        run: apt-get update && apt-get install -y zip
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Build the Project
+        run: dotnet publish ${API_PROJ_PATH} -c Release -r linux-x64 --self-contained false -o ./publish
+
+      - name: Package the Lambda Function
+        run: |
+          cd publish
+          zip -r ../api.zip .
+          cd ..
+
+      - name: Upload Lambda Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: lambda-package
+          path: api.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Lambda Package
+        uses: actions/download-artifact@v4
+        with:
+          name: lambda-package
+          path: ${{ env.TF_WORKING_DIR }}
+
+      - name: Verify
+        run: ls -al ${{ env.TF_WORKING_DIR }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: "Setup Terraform"
+        uses: hashicorp/setup-terraform@v3
+
+      - name: "Terraform Init"
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ vars.TF_S3 }}" \
+            -backend-config="key=${{ vars.SERVICE_NAME }}-tfstate"
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: "Terraform Plan"
+        run: |
+          terraform plan \
+            -lock=false \
+            -var="service_name=${{ vars.SERVICE_NAME }}" \
+            -var="api_key=${{ vars.API_KEY }}" \
+            -var="base_path=${{ env.BASE_PATH }}" \
+            -var="project_name=${{ vars.PROJECT_NAME }}" \
+            -var="jwt_issuer=${{ vars.JWT_ISSUER }}" \
+            -var="jwt_audience=${{ vars.JWT_AUDIENCE }}" \
+            -var="jwt_public_key=${{ vars.JWT_PUBLIC_KEY }}" \
+            -var="jwt_private_key=${{ secrets.JWT_PRIVATE_KEY }}" \
+            -out=tfplan_aws
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        continue-on-error: false
+
+      - name: "Terraform Plan Output"
+        run: terraform show -no-color tfplan_aws > tfplan_aws.txt
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: "Upload Terraform Plan"
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan_aws
+          path: ${{ env.TF_WORKING_DIR }}/tfplan_aws.txt
+
+      - name: "Terraform Apply"
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve tfplan_aws
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        continue-on-error: false
