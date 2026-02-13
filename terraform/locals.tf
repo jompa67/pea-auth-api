@@ -1,5 +1,5 @@
 locals {
-  region        = "eu-east-1"
+  region        = var.region
   prefixed_name = "${var.prefix}-${var.service_name}"
   tags = {
     Environment = var.env

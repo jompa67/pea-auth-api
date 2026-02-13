@@ -10,7 +10,7 @@ permissions:
 
 env:
   VERSION: 0.0.1
-  AWS_REGION: ap-southeast-1
+  AWS_REGION: ${{ vars.AWS_REGION }}
   TF_WORKING_DIR: ./terraform
   SERVICE_NAME: pea-auth-api
   API_PROJ_PATH: src/AuthApi/AuthApi.csproj
@@ -89,13 +89,14 @@ jobs:
         run: |
           terraform plan \
             -lock=false \
+            -var="region=${{ vars.AWS_REGION }}" \
             -var="service_name=${{ vars.SERVICE_NAME }}" \
-            -var="api_key=${{ vars.API_KEY }}" \
+            -var="api_key=${{ secrets.API_KEY }}" \
             -var="base_path=${{ env.BASE_PATH }}" \
             -var="project_name=${{ vars.PROJECT_NAME }}" \
             -var="jwt_issuer=${{ vars.JWT_ISSUER }}" \
             -var="jwt_audience=${{ vars.JWT_AUDIENCE }}" \
-            -var="jwt_public_key=${{ vars.JWT_PUBLIC_KEY }}" \
+            -var="jwt_public_key=${{ secrets.JWT_PUBLIC_KEY }}" \
             -var="jwt_private_key=${{ secrets.JWT_PRIVATE_KEY }}" \
             -out=tfplan_aws
         working-directory: ${{ env.TF_WORKING_DIR }}
