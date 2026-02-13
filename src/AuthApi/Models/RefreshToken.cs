@@ -6,10 +6,10 @@ namespace AuthApi.Models;
 public class RefreshTokenDataxxx
 {
     [DynamoDBHashKey]
-    public string RefreshToken { get; set; } // The actual refresh token string
+    public required string RefreshToken { get; set; } // The actual refresh token string
     
     [DynamoDBProperty]
-    public string Token { get; set; } // The actual refresh token string
+    public required string Token { get; set; } // The actual refresh token string
     
     [DynamoDBProperty]
     public DateTime ExpiryDate { get; set; }
@@ -20,5 +20,5 @@ public class RefreshTokenDataxxx
     [DynamoDBProperty]
     public DateTime AddedDate { get; set; }
     [DynamoDBProperty]
-    public string UserId { get; set; } 
+    public required string UserId { get; set; } 
 }

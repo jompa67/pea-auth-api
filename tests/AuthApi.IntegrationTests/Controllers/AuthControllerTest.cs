@@ -72,12 +72,16 @@ public class AuthControllerTest
     public async Task CreateAdminUser_UserAlreadyAdmin_ReturnsOk()
     {
         // Arrange
-        string userName = "adminUser";
+        var userName = "adminUser";
         var userProfile = new UserProfile
         {
             Username = userName,
             IsAdminRole = true,
-            UserId = default
+            UserId = default,
+            Email = "",
+            UsernameOriginal = "",
+            FirstName = "",
+            LastName = ""
         };
         _loginServiceMock
             .GetUserProfile(userName, Arg.Any<CancellationToken>())
@@ -94,14 +98,21 @@ public class AuthControllerTest
     public async Task RegisterWithPassword_InvalidRequest_ReturnsBadRequest()
     {
         // Arrange
-        var request = new RegisterWithPasswordRequest();
+        var request = new RegisterWithPasswordRequest
+        {
+            Username = "testuser",
+            Email = "test@example.com",
+            Password = "password123",
+            FirstName = "Test",
+            LastName = "User"
+        };
         _registerValidatorMock
             .ValidateAsync(request, Arg.Any<CancellationToken>())
             .Returns(new ValidationResult([new ValidationFailure("PropertyName", "ErrorMessage")]));
-    
+
         // Act
         var result = await _controller.RegisterWithPassword(request);
-    
+
         // Assert
         result.Should().BeOfType<BadRequestObjectResult>();
     }
@@ -110,18 +121,25 @@ public class AuthControllerTest
     public async Task RegisterWithPassword_ValidRequest_ReturnsCreated()
     {
         // Arrange
-        var request = new RegisterWithPasswordRequest();
+        var request = new RegisterWithPasswordRequest
+        {
+            Username = "testuser",
+            Email = "test@example.com",
+            Password = "password123",
+            FirstName = "Test",
+            LastName = "User"
+        };
         _registerValidatorMock
             .ValidateAsync(request, Arg.Any<CancellationToken>())
             .Returns(new ValidationResult());
-    
+
         _loginServiceMock
             .RegisterWithPassword(request, Arg.Any<CancellationToken>())
-            .Returns(new RegisterResult { IsSuccess = true, StatusCode = 201 });
-    
+            .Returns(new RegisterResult { IsSuccess = true, StatusCode = 201, Message = "" });
+
         // Act
         var result = await _controller.RegisterWithPassword(request);
-    
+
         // Assert
         result.Should().BeOfType<ObjectResult>().Which.StatusCode.Should().Be(201);
     }
@@ -130,7 +148,11 @@ public class AuthControllerTest
     public async Task LoginWithPassword_InvalidRequest_ReturnsBadRequest()
     {
         // Arrange
-        var request = new LoginRequest();
+        var request = new LoginRequest
+        {
+            Username = "Billy",
+            Password = "Olsen"
+        };
         _loginValidatorMock
             .ValidateAsync(request, Arg.Any<CancellationToken>())
             .Returns(new ValidationResult([new ValidationFailure("PropertyName", "ErrorMessage")]));
@@ -146,14 +168,18 @@ public class AuthControllerTest
     public async Task LoginWithPassword_ValidRequest_ReturnsOk()
     {
         // Arrange
-        var request = new LoginRequest();
+        var request = new LoginRequest
+        {
+            Username = "Billy",
+            Password = "Carsson"
+        };
         _loginValidatorMock
             .ValidateAsync(request, Arg.Any<CancellationToken>())
             .Returns(new ValidationResult());
     
         _loginServiceMock
             .LoginWithPassword(request, Arg.Any<CancellationToken>())
-            .Returns(new LoginResponse { IsSuccess = true });
+            .Returns(new LoginResponse { IsSuccess = true, ErrorMessage = "" });
 
         // Act
         var result = await _controller.LoginWithPassword(request);
@@ -238,7 +264,11 @@ public class AuthControllerTest
     public async Task RefreshToken_InvalidRequest_ReturnsBadRequest()
     {
         // Arrange
-        var request = new RefreshTokenRequest();
+        var request = new RefreshTokenRequest
+        {
+            Token = "QWQW",
+            RefreshToken = "WERT"
+        };
         _refreshTokenValidatorMock
             .ValidateAsync(request, Arg.Any<CancellationToken>())
             .Returns(new ValidationResult([new ValidationFailure("PropertyName", "ErrorMessage")]));
@@ -254,7 +284,11 @@ public class AuthControllerTest
     public async Task RefreshToken_ValidRequest_ReturnsOk()
     {
         // Arrange
-        var request = new RefreshTokenRequest();
+        var request = new RefreshTokenRequest
+        {
+            Token = "PPP",
+            RefreshToken = "QQQ"
+        };
         _refreshTokenValidatorMock
             .ValidateAsync(request, Arg.Any<CancellationToken>())
             .Returns(new ValidationResult());

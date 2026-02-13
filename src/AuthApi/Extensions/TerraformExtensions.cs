@@ -13,7 +13,7 @@ public static class TerraformExtensions
     /// <param name="lockId">The ID of the lock to release</param>
     /// <param name="logger">Optional logger for recording the process</param>
     /// <returns>True if the lock was successfully released, false otherwise</returns>
-    public static bool ReleaseStateLock(string lockId, ILogger logger = null)
+    public static bool ReleaseStateLock(string lockId, ILogger? logger = null)
     {
         if (string.IsNullOrEmpty(lockId))
         {
@@ -71,7 +71,7 @@ public static class TerraformExtensions
     /// <param name="additionalArgs">Additional arguments for the command</param>
     /// <param name="logger">Optional logger for recording the process</param>
     /// <returns>The exit code of the Terraform process</returns>
-    public static async Task<int> RunWithoutLockAsync(string command, string additionalArgs = "", ILogger logger = null)
+    public static async Task<int> RunWithoutLockAsync(string command, string additionalArgs = "", ILogger? logger = null)
     {
         try
         {

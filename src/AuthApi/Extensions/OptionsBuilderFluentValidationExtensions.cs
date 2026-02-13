@@ -18,11 +18,11 @@ namespace AuthApi.Extensions
             return optionsBuilder;
         }
         
-        private class FluentValidationOptions<TOptions>(string name, IValidator<TOptions> validator)
+        private class FluentValidationOptions<TOptions>(string? name, IValidator<TOptions> validator)
             : IValidateOptions<TOptions>
             where TOptions : class
         {
-            public ValidateOptionsResult Validate(string name1, TOptions options)
+            public ValidateOptionsResult Validate(string? name1, TOptions? options)
             {
                 // Null name is used to configure all named options.
                 if (name != null && name != name1)

@@ -146,7 +146,8 @@ namespace AuthApi.Tests.Endpoints
                 IsSuccess = true,
                 Token = "valid-jwt-token",
                 RefreshToken = "valid-refresh-token",
-                Expiration = DateTime.UtcNow.AddHours(1)
+                Expiration = DateTime.UtcNow.AddHours(1),
+                ErrorMessage = ""
             };
             _loginServiceMock.LoginWithPassword(request, CancellationToken.None).Returns(loginResponse);
 

@@ -62,7 +62,11 @@ namespace AuthApi.Tests.Services
             _userProfileRepositoryMock.GetByUsernameAsync("existinguser", CancellationToken.None).Returns(new UserProfile
             {
                 UserId = Guid.NewGuid(),
-                Username = "existinguser"
+                Username = "existinguser",
+                Email = "existinguser@example.com",
+                UsernameOriginal = "existinguser",
+                FirstName = "Existing",
+                LastName = "User"
             });
 
             // Act
@@ -91,7 +95,11 @@ namespace AuthApi.Tests.Services
             _userProfileRepositoryMock.GetByEmailAsync("existing@example.com", CancellationToken.None).Returns(new UserProfile
             {
                 UserId = Guid.NewGuid(),
-                Email = "existing@example.com"
+                Username = "existinguser",
+                Email = "existing@example.com",
+                UsernameOriginal = "existinguser",
+                FirstName = "Existing",
+                LastName = "User"
             });
 
             // Act
@@ -182,6 +190,10 @@ namespace AuthApi.Tests.Services
             {
                 UserId = userId,
                 Username = "existinguser",
+                Email = "existinguser@example.com",
+                UsernameOriginal = "existinguser",
+                FirstName = "Existing",
+                LastName = "User",
                 EmailVerified = true
             };
 

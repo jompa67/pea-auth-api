@@ -18,7 +18,7 @@ public class UserLogin
     [DynamoDBProperty(Converter = typeof(EnumStringConverter<AuthType>))]
     public required AuthType AuthType { get; set; }
 
-    public string AuthValue { get; set; }
+    public required string AuthValue { get; set; }
 
     [DynamoDBProperty("created_at", Converter = typeof(Iso8601DynamoDbConverter))]
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;

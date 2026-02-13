@@ -10,7 +10,7 @@ namespace AuthApi.Services;
 
 public class TokenResult
 {
-    public string Token { get; set; }
+    public required string Token { get; set; }
     public DateTime Expiration { get; set; }
     public DateTime IssuedAt { get; set; }
 }

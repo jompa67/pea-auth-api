@@ -14,7 +14,7 @@ namespace AuthApi.Services;
 public class RegisterResult
 {
     public bool IsSuccess { get; set; }
-    public string Message { get; set; }
+    public required string Message { get; set; }
     public int StatusCode { get; set; }
 }
 
@@ -64,7 +64,7 @@ public class LoginService(
             FirstName = dto.FirstName,
             LastName = dto.LastName,
             EmailVerified = false,
-            IsTestAccount = dto.IsTestAccount,
+            IsTestAccount = dto.IsTestAccount
         };
 
         var emailVerificationToken = await verificationTokenService.GenerateEmailVerificationTokenAsync(userProfile, cancellationToken);
@@ -139,7 +139,8 @@ public class LoginService(
             Token = tokenResult.Token,
             RefreshToken = refreshToken,
             Expiration = tokenResult.Expiration,
-            IsSuccess = true
+            IsSuccess = true,
+            ErrorMessage = ""
         };
     }
 
@@ -215,7 +216,8 @@ public class LoginService(
                 Token = tokenResult.Token,
                 RefreshToken = refreshToken,
                 Expiration = tokenResult.Expiration,
-                IsSuccess = true
+                IsSuccess = true,
+                ErrorMessage = ""
             };
 
             return (loginResponse, HttpStatusCode.OK, "Token refreshed successfully");

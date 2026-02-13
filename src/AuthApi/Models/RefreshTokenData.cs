@@ -7,12 +7,12 @@ namespace AuthApi.Models;
 public class RefreshTokenData
 {
     [DynamoDBHashKey]
-    public string RefreshToken { get; set; }
+    public required string RefreshToken { get; set; }
     
     [DynamoDBGlobalSecondaryIndexHashKey("TokenIndex")]
-    public string Token { get; set; }
+    public required string Token { get; set; }
     
-    public string UserId { get; set; }
+    public required string UserId { get; set; }
     
     public DateTime ExpiryDate { get; set; }
     

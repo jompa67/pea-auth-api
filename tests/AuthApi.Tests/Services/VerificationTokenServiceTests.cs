@@ -24,7 +24,10 @@ namespace AuthApi.Tests.Services
             {
                 UserId = Guid.NewGuid(),
                 Username = "testuser",
-                Email = "test@example.com"
+                Email = "test@example.com",
+                UsernameOriginal = "testuser",
+                FirstName = "Test",
+                LastName = "User"
             };
             
             _userProfileRepositoryMock.UpdateAsync(Arg.Any<UserProfile>(),CancellationToken.None).Returns(true);
@@ -50,6 +53,9 @@ namespace AuthApi.Tests.Services
                 UserId = Guid.NewGuid(),
                 Username = "testuser",
                 Email = "test@example.com",
+                UsernameOriginal = "testuser",
+                FirstName = "Test",
+                LastName = "User",
                 EmailVerificationToken = token,
                 EmailVerificationTokenExpiry = expiry,
                 EmailVerified = false
@@ -101,6 +107,9 @@ namespace AuthApi.Tests.Services
                 UserId = Guid.NewGuid(),
                 Username = "testuser",
                 Email = "test@example.com",
+                UsernameOriginal = "testuser",
+                FirstName = "Test",
+                LastName = "User",
                 EmailVerificationToken = token,
                 EmailVerificationTokenExpiry = expiry,
                 EmailVerified = false

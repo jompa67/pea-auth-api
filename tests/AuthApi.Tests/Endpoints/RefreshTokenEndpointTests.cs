@@ -166,7 +166,8 @@ namespace AuthApi.Tests.Endpoints
                 IsSuccess = true,
                 Token = "new-token",
                 RefreshToken = "new-refresh-token",
-                Expiration = DateTime.UtcNow.AddHours(1)
+                Expiration = DateTime.UtcNow.AddHours(1),
+                ErrorMessage = ""
             };
 
             _loginServiceMock.GetRefreshToken(request.Token, request.RefreshToken, CancellationToken.None)
