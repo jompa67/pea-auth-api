@@ -7,14 +7,19 @@ on:
 permissions:
   id-token: write
   contents: read
-
-env:
-  VERSION: 0.0.1
-  AWS_REGION: 
-  TF_WORKING_DIR: ./terraform
-  SERVICE_NAME: 
-  API_PROJ_PATH: src/AuthApi/AuthApi.csproj
-  BASE_PATH: auth
+  uses: aws-actions/configure-aws-credentials@v4
+  with:
+    role-to-assume: arn:aws:iam::108618334235:role/CI-CD
+    aws-region: ap-southeast-1
+    audience: sts.amazonaws.com
+    output-env-credentials: true
+  env:
+    VERSION: 0.0.1
+    AWS_REGION: ap-southeast-1
+    TF_WORKING_DIR: ./terraform
+    SERVICE_NAME: pea-auth-api
+    API_PROJ_PATH: src/AuthApi/AuthApi.csproj
+    BASE_PATH: auth
   
 jobs:
   build:
