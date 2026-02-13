@@ -10,9 +10,9 @@ permissions:
 
 env:
   VERSION: 0.0.1
-  AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_REGION: 
   TF_WORKING_DIR: ./terraform
-  SERVICE_NAME: ${{ vars.SERVICE_NAME }}
+  SERVICE_NAME: 
   API_PROJ_PATH: src/AuthApi/AuthApi.csproj
   BASE_PATH: auth
   
