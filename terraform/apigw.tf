@@ -11,13 +11,14 @@ resource "aws_api_gateway_rest_api" "api" {
 ###############################  BASE-PATH MAPPING  ################################
 ####################################################################################
 
-resource "aws_api_gateway_base_path_mapping" "base_path_mapping" {
-  depends_on = [aws_api_gateway_stage.live_stage]
-  api_id      = aws_api_gateway_rest_api.api.id
-  stage_name  = aws_api_gateway_stage.live_stage.stage_name
-  domain_name = var.domain_name
-  base_path   = var.base_path
-}
+# Commented out - requires custom domain setup in API Gateway first
+# resource "aws_api_gateway_base_path_mapping" "base_path_mapping" {
+#   depends_on = [aws_api_gateway_stage.live_stage]
+#   api_id      = aws_api_gateway_rest_api.api.id
+#   stage_name  = aws_api_gateway_stage.live_stage.stage_name
+#   domain_name = var.domain_name
+#   base_path   = var.base_path
+# }
 
 ####################################################################################
 ###############################  API GW METHODS  ###################################
