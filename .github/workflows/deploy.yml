@@ -80,7 +80,7 @@ jobs:
 
       - name: "Terraform Init"
         run: |
-          terraform init \
+          terraform init -reconfigure \
             -backend-config="bucket=${{ vars.TF_S3 }}" \
             -backend-config="key=${{ vars.SERVICE_NAME }}-tfstate"
         working-directory: ${{ env.TF_WORKING_DIR }}
