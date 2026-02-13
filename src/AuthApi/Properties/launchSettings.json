@@ -1,0 +1,35 @@
+﻿{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5277",
+      "environmentVariables": {
+        "JwtSettings__PrivateKey": "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",
+        "JwtSettings__PublicKey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1jYtrX9g8BIHV64dXQTR\nBlD2uK/XWR3cdvZBDUzbpSKmuwKFFesRUXGQ5CH57MQgAyTE++CcKgzU4IdSeZGK\nmo6y873GdhklpaeTCVeibjvV/Kzqmhh3dAzZa+TiwSkRbjz/JRZxA+ha69lxXhm3\n/qEMC/Ld0hDuv/yon8kfEcqC+7rNkq61eqqDy8+But1DWdYlNgdcag0r0gVcFctw\nGNaAUrYSV5fyFhKqxorA+gYhpr5l2EOXkf5Ozh11ltdVkcY/qqcrm8mpxgGz2XRM\nZHGp8TyhmJGlytHMtBpPCw15LtEgB9HLDdvnxTwt2ecVkL2d1HyaLOwCYj44kTRk\nQwIDAQAB\n-----END PUBLIC KEY-----",
+        "JwtSettings__Issuer": "jm-auth",
+        "JwtSettings__Audience": "jm-api",
+        "ASPNETCORE_ENVIRONMENT": "local",
+        "AWS_PROFILE": "jmdev",
+        "AWS_REGION": "us-east-1"
+      }
+    },
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:7299;http://localhost:5277",
+      "environmentVariables": {
+        "JwtSettings__PrivateKey": "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",
+        "JwtSettings__PublicKey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1jYtrX9g8BIHV64dXQTR\nBlD2uK/XWR3cdvZBDUzbpSKmuwKFFesRUXGQ5CH57MQgAyTE++CcKgzU4IdSeZGK\nmo6y873GdhklpaeTCVeibjvV/Kzqmhh3dAzZa+TiwSkRbjz/JRZxA+ha69lxXhm3\n/qEMC/Ld0hDuv/yon8kfEcqC+7rNkq61eqqDy8+But1DWdYlNgdcag0r0gVcFctw\nGNaAUrYSV5fyFhKqxorA+gYhpr5l2EOXkf5Ozh11ltdVkcY/qqcrm8mpxgGz2XRM\nZHGp8TyhmJGlytHMtBpPCw15LtEgB9HLDdvnxTwt2ecVkL2d1HyaLOwCYj44kTRk\nQwIDAQAB\n-----END PUBLIC KEY-----",
+        "JwtSettings__Issuer": "jm-auth",
+        "JwtSettings__Audience": "jm-api",
+        "ASPNETCORE_ENVIRONMENT": "local",
+        "AWS_PROFILE": "jmdev",
+        "AWS_REGION": "us-east-1"
+      }
+    }
+  }
+}

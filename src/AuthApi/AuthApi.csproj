@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>disable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+        <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="9.0.4"/>
+        <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.405.36"/>
+        <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.400"/>
+        <PackageReference Include="AWSSDK.KeyManagementService" Version="3.7.400.110"/>
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
+        <PackageReference Include="Eris.Serilog.Formatting.Json" Version="1.1.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.13"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.13"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0"/>
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0"/>
+        <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.1-dev-00953"/>
+        <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1"/>
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.4.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Update="appsettings*.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+</Project>

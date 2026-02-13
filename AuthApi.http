@@ -1,0 +1,27 @@
+@jm_auth_HostAddress = http://localhost:5277
+
+POST {{jm_auth_HostAddress}}/api/auth/register/password
+Content-Type: application/json
+
+{
+    "username": "uncle_bob",
+    "password": "",
+    "email": "bob@gmail.com",
+    "firstName": "Bob",
+    "lastName": "Martin"
+}
+
+###
+
+POST {{jm_auth_HostAddress}}/api/auth/login/password
+Content-Type: application/json
+
+{
+  "username": "uncle_bob",
+  "password": ""
+}
+
+###
+
+GET {{jm_auth_HostAddress}}/api/auth/protected
+Authorization: Bearer 
