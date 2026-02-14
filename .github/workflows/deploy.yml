@@ -98,6 +98,13 @@ jobs:
             -var="jwt_audience=${{ vars.JWT_AUDIENCE }}" \
             -var="jwt_public_key=${{ secrets.JWT_PUBLIC_KEY }}" \
             -var="jwt_private_key=${{ secrets.JWT_PRIVATE_KEY }}" \
+            -var="smtp_server=${{ vars.SMTP_SERVER }}" \
+            -var="smtp_port=${{ vars.SMTP_PORT }}" \
+            -var="smtp_username=${{ secrets.SMTP_USERNAME }}" \
+            -var="smtp_password=${{ secrets.SMTP_PASSWORD }}" \
+            -var="email_sender_email=${{ vars.EMAIL_SENDER_EMAIL }}" \
+            -var="email_sender_name=${{ vars.EMAIL_SENDER_NAME }}" \
+            -var="email_base_url=${{ vars.EMAIL_BASE_URL }}" \
             -out=tfplan_aws
         working-directory: ${{ env.TF_WORKING_DIR }}
         continue-on-error: false
