@@ -25,11 +25,25 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         _jwtSettings = jwtOptions.Value;
 
         if (string.IsNullOrEmpty(_jwtSettings.PrivateKey))
-            throw new InvalidOperationException("RSA Private Key is missing.");
+            throw new InvalidOperationException("RSA Private Key is missing. Ensure JwtSettings__PrivateKeySecret or JwtSettings__PrivateKey is correctly configured.");
 
-        using var rsa = RSA.Create();
-        rsa.ImportFromPem(_jwtSettings.PrivateKey);
-        _rsaSecurityKey = new RsaSecurityKey(rsa.ExportParameters(true));
+        try
+        {
+            using var rsa = RSA.Create();
+            rsa.ImportFromPem(_jwtSettings.PrivateKey);
+            _rsaSecurityKey = new RsaSecurityKey(rsa.ExportParameters(true));
+        }
+        catch (ArgumentException ex) when (ex.Message.Contains("No supported key formats were found"))
+        {
+            var keyPreview = _jwtSettings.PrivateKey.Length > 20 
+                ? _jwtSettings.PrivateKey[..20] + "..." 
+                : _jwtSettings.PrivateKey;
+            throw new InvalidOperationException($"Invalid RSA Private Key format. The key must be a PEM-encoded string. Start of key: '{keyPreview}', Length: {_jwtSettings.PrivateKey.Length}", ex);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Failed to initialize RSA Private Key from the provided configuration.", ex);
+        }
     }
 
     /// <summary>

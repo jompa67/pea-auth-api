@@ -5,6 +5,7 @@ namespace AuthApi.Settings;
 public class JwtSettings
 {
     [KmsDecryption] public string PrivateKey { get; set; } = string.Empty;
+    public string PrivateKeySecret { get; set; } = string.Empty;
     public string PublicKey { get; set; } = string.Empty;
     public string Issuer { get; set; } = string.Empty;
     public string Audience { get; set; } = string.Empty;

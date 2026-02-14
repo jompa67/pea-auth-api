@@ -12,24 +12,31 @@ public class ConfigureJwtBearerOptions(IOptions<JwtSettings> jwtOptions) : IConf
 
     public void Configure(JwtBearerOptions options)
     {
-        var rsaPublic = RSA.Create();
-        rsaPublic.ImportFromPem(_jwtSettings.PublicKey);
-
-        options.TokenValidationParameters = new TokenValidationParameters
+        try
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = _jwtSettings.Issuer,
-            ValidAudience = _jwtSettings.Audience,
-            ClockSkew = TimeSpan.FromMinutes(_jwtSettings.ClockSkewMinutes),
-            IssuerSigningKey = new RsaSecurityKey(rsaPublic),
-            
-            // Add proper claim type mapping for role-based authorization
-            RoleClaimType = ClaimTypes.Role,
-            NameClaimType = ClaimTypes.Name
-        };
+            var rsaPublic = RSA.Create();
+            rsaPublic.ImportFromPem(_jwtSettings.PublicKey);
+
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = _jwtSettings.Issuer,
+                ValidAudience = _jwtSettings.Audience,
+                ClockSkew = TimeSpan.FromMinutes(_jwtSettings.ClockSkewMinutes),
+                IssuerSigningKey = new RsaSecurityKey(rsaPublic),
+                
+                // Add proper claim type mapping for role-based authorization
+                RoleClaimType = ClaimTypes.Role,
+                NameClaimType = ClaimTypes.Name
+            };
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Failed to initialize JWT Public Key. Ensure JwtSettings__PublicKey is a valid PEM string. Length: {_jwtSettings.PublicKey?.Length ?? 0}", ex);
+        }
         
         // Optionally, you can add events for additional JWT processing
         options.Events = new JwtBearerEvents
