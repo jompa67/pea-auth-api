@@ -80,9 +80,16 @@ public class ConfigureJwtSettings(
                     if (prop.Name == nameof(JwtSettings.PrivateKey))
                     {
                         var preview = value.Length > 20 ? value[..20] + "..." : value;
-                        throw new InvalidOperationException(
-                            $"Failed to decrypt {prop.Name} using KMS. The value looks like a ciphertext but decryption failed. " +
-                            $"Start: '{preview}', Length: {value.Length}. Error: {ex.Message}", ex);
+                        var message = $"Failed to decrypt {prop.Name} using KMS. The value looks like a ciphertext but decryption failed. " +
+                                      $"Start: '{preview}', Length: {value.Length}. Error: {ex.Message}";
+                        
+                        if (ex is InvalidOperationException && ex.Message.Contains("AWS credentials not found"))
+                        {
+                            // Re-throw the descriptive credential error
+                            throw;
+                        }
+
+                        throw new InvalidOperationException(message, ex);
                     }
 
                     if (value.Length > 50 && !value.Contains(' '))
@@ -144,12 +151,23 @@ public class ConfigureJwtSettings(
 
     private async Task<string> DecryptWithKmsAsync(string encryptedBase64)
     {
-        var request = new DecryptRequest
+        try
         {
-            CiphertextBlob = new MemoryStream(Convert.FromBase64String(encryptedBase64))
-        };
+            var request = new DecryptRequest
+            {
+                CiphertextBlob = new MemoryStream(Convert.FromBase64String(encryptedBase64))
+            };
 
-        var response = await kmsClient.DecryptAsync(request);
-        return Encoding.UTF8.GetString(response.Plaintext.ToArray());
+            var response = await kmsClient.DecryptAsync(request);
+            return Encoding.UTF8.GetString(response.Plaintext.ToArray());
+        }
+        catch (Amazon.Runtime.AmazonServiceException ex) when (ex.Message.Contains("EC2 Instance Metadata Service") || ex.Message.Contains("AWS credentials"))
+        {
+            throw new InvalidOperationException(
+                "AWS credentials not found. When running locally, ensure you have set AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY " +
+                "environment variables or configured a default profile in ~/.aws/credentials. " +
+                "Alternatively, replace the KMS ciphertext in appsettings.local.json with a plain PEM-encoded string " +
+                "to skip KMS decryption during local development.", ex);
+        }
     }
 }

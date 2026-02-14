@@ -33,6 +33,9 @@ public class Startup(IConfiguration configuration)
     {
         ConfigureLogging(Configuration);
 
+        var awsOptions = Configuration.GetAWSOptions();
+        services.AddDefaultAWSOptions(awsOptions);
+
         services
             .AddDynamoDb()
             .AddAWSService<IAmazonKeyManagementService>()
@@ -72,6 +75,9 @@ public class Startup(IConfiguration configuration)
 
         // Register all validators
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+        // Register diagnostics tool
+        services.AddHostedService<JwtSettingsConfigurerDiagnostics>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
