@@ -1,3 +1,4 @@
+using AuthApi.Services;
 using Microsoft.Extensions.Options;
 
 namespace AuthApi.Settings;
@@ -9,23 +10,37 @@ public class JwtSettingsConfigurer : IConfigureOptions<JwtSettings>
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<JwtSettingsConfigurer> _logger;
-    
-    public JwtSettingsConfigurer(IConfiguration configuration, ILogger<JwtSettingsConfigurer> logger)
+    private readonly ISecretsManagerService? _secretsManager;
+
+    public JwtSettingsConfigurer(IConfiguration configuration, ILogger<JwtSettingsConfigurer> logger, ISecretsManagerService? secretsManager = null)
     {
         _configuration = configuration;
         _logger = logger;
+        _secretsManager = secretsManager;
     }
-    
+
     public void Configure(JwtSettings options)
     {
         _logger.LogInformation("Configuring JWT settings from environment variables");
-        
+
         // Check environment variables first (AWS Lambda style variable naming)
-        options.PrivateKey = GetValueFromEnvironmentOrConfig("JwtSettings__PrivateKey", options.PrivateKey);
+        var privateKeySecretArn = GetValueFromEnvironmentOrConfig("JwtSettings__PrivateKeySecret", string.Empty);
+
+        if (!string.IsNullOrEmpty(privateKeySecretArn) && _secretsManager != null)
+        {
+            _logger.LogInformation("Fetching JWT private key from Secrets Manager");
+            options.PrivateKey = _secretsManager.GetSecretAsync(privateKeySecretArn).GetAwaiter().GetResult();
+        }
+        else
+        {
+            _logger.LogWarning("No PrivateKeySecret ARN found, falling back to direct PrivateKey environment variable");
+            options.PrivateKey = GetValueFromEnvironmentOrConfig("JwtSettings__PrivateKey", options.PrivateKey);
+        }
+
         options.PublicKey = GetValueFromEnvironmentOrConfig("JwtSettings__PublicKey", options.PublicKey);
         options.Issuer = GetValueFromEnvironmentOrConfig("JwtSettings__Issuer", options.Issuer);
         options.Audience = GetValueFromEnvironmentOrConfig("JwtSettings__Audience", options.Audience);
-        
+
         // Log the settings (masking sensitive values)
         _logger.LogInformation("JWT settings configured: Issuer={Issuer}, Audience={Audience}, PublicKey={PublicKeyPresent}, PrivateKey={PrivateKeyPresent}",
             options.Issuer,

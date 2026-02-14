@@ -15,6 +15,7 @@
         <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.405.36"/>
         <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.400"/>
         <PackageReference Include="AWSSDK.KeyManagementService" Version="3.7.400.110"/>
+        <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.400"/>
         <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
         <PackageReference Include="Eris.Serilog.Formatting.Json" Version="1.1.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.13"/>

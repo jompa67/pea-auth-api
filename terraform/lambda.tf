@@ -10,11 +10,11 @@ resource "aws_lambda_function" "api" {
 
   environment {
     variables = {
-      ASPNETCORE_ENVIRONMENT  = var.env,
-      JwtSettings__Issuer     = var.jwt_issuer,
-      JwtSettings__Audience   = var.jwt_audience,
-      JwtSettings__PublicKey  = var.jwt_public_key,
-      JwtSettings__PrivateKey = var.jwt_private_key,
+      ASPNETCORE_ENVIRONMENT        = var.env,
+      JwtSettings__Issuer           = var.jwt_issuer,
+      JwtSettings__Audience         = var.jwt_audience,
+      JwtSettings__PublicKey        = var.jwt_public_key,
+      JwtSettings__PrivateKeySecret = aws_secretsmanager_secret.jwt_private_key.arn,
     }
   }
 }
@@ -46,7 +46,14 @@ resource "aws_iam_policy" "access_policy" {
       {
         Effect = "Allow"
         Action = [
-          "dynamodb:*",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Query",
+          "dynamodb:Scan",
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem"
         ]
         Resource = [
           aws_dynamodb_table.user_refresh_token_table.arn,
@@ -64,6 +71,13 @@ resource "aws_iam_policy" "access_policy" {
           "kms:DescribeKey"
         ]
         Resource = aws_kms_key.my_key.arn
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = aws_secretsmanager_secret.jwt_private_key.arn
       }
     ]
   })

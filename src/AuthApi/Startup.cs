@@ -1,4 +1,5 @@
 using Amazon.KeyManagementService;
+using Amazon.SecretsManager;
 using AuthApi.Extensions;
 using AuthApi.Services;
 using AuthApi.Validators;
@@ -35,6 +36,8 @@ public class Startup(IConfiguration configuration)
         services
             .AddDynamoDb()
             .AddAWSService<IAmazonKeyManagementService>()
+            .AddAWSService<IAmazonSecretsManager>()
+            .AddSingleton<ISecretsManagerService, SecretsManagerService>()
             .AddSingleton<IRefreshTokenRepository, RefreshTokenRepository>()
             .AddSingleton<IUserProfileRepository, UserProfileRepository>()
             .AddSingleton<IUserLoginRepository, UserLoginRepository>()
