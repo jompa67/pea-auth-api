@@ -15,6 +15,13 @@ resource "aws_lambda_function" "api" {
       JwtSettings__Audience         = var.jwt_audience,
       JwtSettings__PublicKey        = var.jwt_public_key,
       JwtSettings__PrivateKeySecret = aws_secretsmanager_secret.jwt_private_key.arn,
+      EmailSettings__SmtpServer     = var.smtp_server,
+      EmailSettings__SmtpPort       = var.smtp_port,
+      EmailSettings__Username       = var.smtp_username,
+      EmailSettings__Password       = var.smtp_password,
+      EmailSettings__SenderEmail    = var.email_sender_email,
+      EmailSettings__SenderName     = var.email_sender_name,
+      EmailSettings__BaseUrl        = var.email_base_url,
     }
   }
 }

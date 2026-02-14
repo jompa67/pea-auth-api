@@ -80,3 +80,40 @@ variable "jwt_private_key" {
   type        = string
   sensitive   = true
 }
+
+variable "smtp_server" {
+  description = "SMTP Server"
+  type        = string
+}
+
+variable "smtp_port" {
+  description = "SMTP Port"
+  type        = number
+  default     = 587
+}
+
+variable "smtp_username" {
+  description = "SMTP Username"
+  type        = string
+}
+
+variable "smtp_password" {
+  description = "SMTP Password"
+  type        = string
+  sensitive   = true
+}
+
+variable "email_sender_email" {
+  description = "Sender Email"
+  type        = string
+}
+
+variable "email_sender_name" {
+  description = "Sender Name"
+  type        = string
+}
+
+variable "email_base_url" {
+  description = "Base URL for emails"
+  type        = string
+}
