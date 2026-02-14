@@ -33,6 +33,19 @@ public class ConfigureJwtBearerOptions(IOptions<JwtSettings> jwtOptions) : IConf
                 NameClaimType = ClaimTypes.Name
             };
         }
+        catch (ArgumentException ex) when (ex.Message.Contains("No supported key formats were found"))
+        {
+            var keyPreview = _jwtSettings.PublicKey?.Length > 20 
+                ? _jwtSettings.PublicKey[..20] + "..." 
+                : _jwtSettings.PublicKey;
+            
+            var isKmsCiphertext = _jwtSettings.PublicKey?.StartsWith("AQIC") ?? false;
+            var additionalHint = isKmsCiphertext 
+                ? " This looks like an encrypted KMS ciphertext. Note that the public key should usually be a plain PEM string, or marked with [KmsDecryption] if it is encrypted."
+                : "";
+
+            throw new InvalidOperationException($"Invalid RSA Public Key format. The key must be a PEM-encoded string.{additionalHint} Start of key: '{keyPreview}', Length: {_jwtSettings.PublicKey?.Length ?? 0}", ex);
+        }
         catch (Exception ex)
         {
             throw new InvalidOperationException($"Failed to initialize JWT Public Key. Ensure JwtSettings__PublicKey is a valid PEM string. Length: {_jwtSettings.PublicKey?.Length ?? 0}", ex);

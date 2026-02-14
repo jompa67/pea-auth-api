@@ -37,10 +37,17 @@ public class ConfigureJwtSettings(
                     settings.PrivateKey = processedSecret;
                     logger.LogInformation("Successfully retrieved JWT Private Key (PEM format, length: {Length})", settings.PrivateKey.Length);
                 }
+                else if (processedSecret.StartsWith("AQIC"))
+                {
+                    settings.PrivateKey = processedSecret;
+                    logger.LogInformation("Retrieved secret from Secrets Manager (appears to be KMS ciphertext, length: {Length})", settings.PrivateKey.Length);
+                }
                 else
                 {
                     settings.PrivateKey = processedSecret;
-                    logger.LogInformation("Retrieved secret from Secrets Manager (non-PEM format, length: {Length})", settings.PrivateKey.Length);
+                    logger.LogInformation("Retrieved secret from Secrets Manager (non-PEM format, length: {Length}, start: {Start})", 
+                        settings.PrivateKey.Length, 
+                        processedSecret.Length > 10 ? processedSecret[..10] : processedSecret);
                 }
             }
             catch (Exception ex)
@@ -68,8 +75,16 @@ public class ConfigureJwtSettings(
                 }
                 catch (Exception ex)
                 {
-                    // If decryption fails, we assume it's already decrypted or not a KMS ciphertext
-                    // but we log it as a warning if it looks like it should have been a ciphertext
+                    // If decryption fails, we log it. 
+                    // For PrivateKey, this is fatal.
+                    if (prop.Name == nameof(JwtSettings.PrivateKey))
+                    {
+                        var preview = value.Length > 20 ? value[..20] + "..." : value;
+                        throw new InvalidOperationException(
+                            $"Failed to decrypt {prop.Name} using KMS. The value looks like a ciphertext but decryption failed. " +
+                            $"Start: '{preview}', Length: {value.Length}. Error: {ex.Message}", ex);
+                    }
+
                     if (value.Length > 50 && !value.Contains(' '))
                     {
                         logger.LogWarning("KMS decryption failed for {PropertyName}, but the value looks like a ciphertext. Error: {Message}", prop.Name, ex.Message);

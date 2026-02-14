@@ -38,7 +38,13 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             var keyPreview = _jwtSettings.PrivateKey.Length > 20 
                 ? _jwtSettings.PrivateKey[..20] + "..." 
                 : _jwtSettings.PrivateKey;
-            throw new InvalidOperationException($"Invalid RSA Private Key format. The key must be a PEM-encoded string. Start of key: '{keyPreview}', Length: {_jwtSettings.PrivateKey.Length}", ex);
+            
+            var isKmsCiphertext = _jwtSettings.PrivateKey.StartsWith("AQIC");
+            var additionalHint = isKmsCiphertext 
+                ? " This looks like an encrypted KMS ciphertext. Ensure that the Lambda function has permissions to decrypt it and that the KMS key is correct."
+                : "";
+
+            throw new InvalidOperationException($"Invalid RSA Private Key format. The key must be a PEM-encoded string.{additionalHint} Start of key: '{keyPreview}', Length: {_jwtSettings.PrivateKey.Length}", ex);
         }
         catch (Exception ex)
         {
